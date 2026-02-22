@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>PC Checker</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#030712;--card:#111827;--gold:#D4A843;--dim:#6b7280;--border:#1f2937;--green:#22c55e;--red:#ef4444;--blue:#3b82f6}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:#f9fafb;min-height:100vh;padding:16px;max-width:480px;margin:0 auto}
+.logo{text-align:center;padding:20px 0 10px}
+.logo-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--gold),#B8922F);display:inline-flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:20px}
+.logo h1{font-size:18px;margin-top:8px;font-weight:700}
+.logo p{color:var(--dim);font-size:12px;margin-top:2px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin:12px 0}
+.card h2{font-size:14px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-gold{background:var(--gold);color:#000}
+.btn-gold:hover{background:#e5bc5a}
+.btn-outline{background:transparent;border:1px solid var(--border);color:#f9fafb}
+.btn-outline:hover{border-color:var(--gold)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.os-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}
+.os-btn{padding:14px 8px;background:var(--bg);border:2px solid var(--border);border-radius:12px;text-align:center;cursor:pointer;transition:all .2s}
+.os-btn.active{border-color:var(--gold);background:rgba(212,168,67,.1)}
+.os-btn .icon{font-size:28px;display:block;margin-bottom:4px}
+.os-btn .label{font-size:11px;color:var(--dim)}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.profile-btn{padding:12px;background:var(--bg);border:2px solid var(--border);border-radius:12px;text-align:center;cursor:pointer;transition:all .2s;font-size:12px}
+.profile-btn.active{border-color:var(--gold);background:rgba(212,168,67,.1)}
+.profile-btn .icon{font-size:24px;display:block;margin-bottom:4px}
+.status{text-align:center;padding:30px;color:var(--dim)}
+.status .spinner{width:40px;height:40px;border:3px solid var(--border);border-top:3px solid var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.score-circle{width:120px;height:120px;border-radius:50%;border:6px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;position:relative}
+.score-circle .num{font-size:42px;font-weight:900;line-height:1}
+.score-circle .grade{font-size:16px;font-weight:700;color:var(--gold);margin-top:2px}
+.score-bar{margin:8px 0}
+.score-bar .label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.score-bar .label span:last-child{font-weight:700}
+.score-bar .track{height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+.score-bar .fill{height:100%;border-radius:3px;transition:width .6s ease}
+.hw-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.hw-item:last-child{border:none}
+.hw-item .key{color:var(--dim)}
+.hw-item .val{font-weight:600;text-align:right;max-width:60%}
+.pill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600}
+.pill-green{background:rgba(34,197,94,.15);color:var(--green)}
+.pill-gold{background:rgba(212,168,67,.15);color:var(--gold)}
+.pill-red{background:rgba(239,68,68,.15);color:var(--red)}
+.hidden{display:none}
+.fade-in{animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.footer{text-align:center;padding:20px;color:var(--dim);font-size:11px}
+</style>
+</head>
+<body>
+
+<div class="logo">
+  <div class="logo-icon">N</div>
+  <h1>PC Checker</h1>
+  <p>Nixo Soft Corporation</p>
+</div>
+
+<!-- Screen 1: Select OS -->
+<div id="screen-os" class="card">
+  <h2>Target OS</h2>
+  <p style="color:var(--dim);font-size:13px;margin-bottom:12px">What OS is running on the PC with the dongle?</p>
+  <div class="os-grid">
+    <div class="os-btn active" data-os="windows" onclick="selectOS(this)">
+      <span class="icon">🪟</span>
+      <span class="label">Windows</span>
+    </div>
+    <div class="os-btn" data-os="linux" onclick="selectOS(this)">
+      <span class="icon">🐧</span>
+      <span class="label">Linux</span>
+    </div>
+    <div class="os-btn" data-os="mac" onclick="selectOS(this)">
+      <span class="icon">🍎</span>
+      <span class="label">macOS</span>
+    </div>
+  </div>
+</div>
+
+<!-- Screen 2: Select Profile -->
+<div id="screen-profile" class="card">
+  <h2>Test Profile</h2>
+  <div class="profile-grid">
+    <div class="profile-btn active" data-profile="gaming" onclick="selectProfile(this)"><span class="icon">🎮</span>Gaming</div>
+    <div class="profile-btn" data-profile="aiml" onclick="selectProfile(this)"><span class="icon">🤖</span>AI / ML</div>
+    <div class="profile-btn" data-profile="video" onclick="selectProfile(this)"><span class="icon">🎬</span>Video / 3D</div>
+    <div class="profile-btn" data-profile="dev" onclick="selectProfile(this)"><span class="icon">💻</span>Developer</div>
+    <div class="profile-btn" data-profile="music" onclick="selectProfile(this)"><span class="icon">🎵</span>Music</div>
+    <div class="profile-btn" data-profile="server" onclick="selectProfile(this)"><span class="icon">🖥️</span>Server</div>
+    <div class="profile-btn" data-profile="office" onclick="selectProfile(this)"><span class="icon">📊</span>Office</div>
+    <div class="profile-btn" data-profile="mining" onclick="selectProfile(this)"><span class="icon">⛏️</span>Mining</div>
+  </div>
+</div>
+
+<!-- Scan Button -->
+<div id="screen-scan">
+  <button class="btn btn-gold" onclick="startScan()" id="scanBtn">
+    ▶ Run Hardware Scan
+  </button>
+  <p style="color:var(--dim);font-size:11px;text-align:center;margin-top:8px">
+    The dongle will type commands on the target PC automatically
+  </p>
+</div>
+
+<!-- Scanning Status -->
+<div id="screen-scanning" class="card hidden">
+  <div class="status">
+    <div class="spinner"></div>
+    <div id="scanStatus">Typing commands on PC...</div>
+    <p style="font-size:12px;margin-top:8px">Please wait — don't touch the keyboard</p>
+  </div>
+</div>
+
+<!-- Results -->
+<div id="screen-results" class="hidden fade-in">
+  <div class="card" style="text-align:center">
+    <h2 id="resultProfile">Gaming Score</h2>
+    <div class="score-circle" id="scoreCircle">
+      <span class="num" id="scoreNum">—</span>
+      <span class="grade" id="scoreGrade">—</span>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Category Scores</h2>
+    <div id="categoryScores"></div>
+  </div>
+
+  <div class="card">
+    <h2>Hardware Details</h2>
+    <div id="hwDetails"></div>
+  </div>
+
+  <div class="card">
+    <h2>Storage</h2>
+    <div id="storageDetails"></div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin:12px 0">
+    <button class="btn btn-outline" style="flex:1" onclick="resetScan()">↻ New Scan</button>
+    <button class="btn btn-gold" style="flex:1" onclick="exportPDF()">📄 PDF Report</button>
+  </div>
+</div>
+
+<div class="footer">
+  Nixo Soft Corporation · PC Checker v2.0<br>
+  <span id="dongleInfo"></span>
+</div>
+
+<script>
+// ─── State ──────────────────────────────────────────────────
+let selectedOS = 'windows';
+let selectedProfile = 'gaming';
+let results = null;
+
+// ─── Profile Weights ────────────────────────────────────────
+const PROFILES = {
+  gaming:  { cpu: .25, gpu: .35, ram: .15, storage: .15, thermal: .10 },
+  aiml:    { cpu: .20, gpu: .40, ram: .25, storage: .10, thermal: .05 },
+  video:   { cpu: .30, gpu: .30, ram: .15, storage: .20, thermal: .05 },
+  dev:     { cpu: .30, gpu: .10, ram: .25, storage: .25, thermal: .10 },
+  music:   { cpu: .35, gpu: .05, ram: .25, storage: .25, thermal: .10 },
+  server:  { cpu: .25, gpu: .05, ram: .25, storage: .20, thermal: .25 },
+  office:  { cpu: .25, gpu: .15, ram: .25, storage: .25, thermal: .10 },
+  mining:  { cpu: .10, gpu: .45, ram: .10, storage: .05, thermal: .30 }
+};
+
+const PROFILE_NAMES = {
+  gaming:'Gaming',aiml:'AI / ML',video:'Video / 3D',dev:'Developer',
+  music:'Music',server:'Server',office:'Office',mining:'Mining'
+};
+
+// ─── Scoring Engine ─────────────────────────────────────────
+function scoreCPU(cpu) {
+  if (!cpu) return 30;
+  let s = 40;
+  s += Math.min((cpu.cores || 1) * 5, 25);
+  s += Math.min((cpu.threads || 1) * 2, 15);
+  s += Math.min(((cpu.maxClockMHz || 1000) - 1000) / 40, 20);
+  return Math.min(Math.max(Math.round(s), 0), 100);
+}
+
+function scoreGPU(gpus) {
+  if (!gpus || !gpus.length || !gpus[0].name || gpus[0].name === 'Unknown') return 20;
+  let s = 35;
+  const name = (gpus[0].name || '').toLowerCase();
+  if (name.match(/rtx\s*40[89]0/)) s = 95;
+  else if (name.match(/rtx\s*4070/)) s = 85;
+  else if (name.match(/rtx\s*4060/)) s = 75;
+  else if (name.match(/rtx\s*30[789]0/)) s = 80;
+  else if (name.match(/rtx\s*3060/)) s = 70;
+  else if (name.match(/rtx\s*20/)) s = 60;
+  else if (name.match(/gtx\s*16/)) s = 50;
+  else if (name.match(/rx\s*7/)) s = 80;
+  else if (name.match(/rx\s*6[89]/)) s = 75;
+  else if (name.match(/rx\s*6[67]/)) s = 65;
+  else if (name.match(/apple\s*m[34]/i)) s = 80;
+  else if (name.match(/apple\s*m[12]/i)) s = 65;
+  else if (name.match(/intel.*uhd|intel.*iris/i)) s = 25;
+  if (gpus[0].vramGB >= 24) s = Math.max(s, 90);
+  else if (gpus[0].vramGB >= 12) s = Math.max(s, 70);
+  else if (gpus[0].vramGB >= 8) s = Math.max(s, 55);
+  return Math.min(s, 100);
+}
+
+function scoreRAM(mem) {
+  if (!mem) return 30;
+  const gb = mem.totalGB || 0;
+  if (gb >= 64) return 95;
+  if (gb >= 32) return 85;
+  if (gb >= 16) return 70;
+  if (gb >= 8) return 50;
+  return 30;
+}
+
+function scoreStorage(storage) {
+  if (!storage || !storage.length) return 30;
+  let s = 40;
+  const d = storage[0];
+  if ((d.type || '').match(/nvme/i)) s += 30;
+  else if ((d.type || '').match(/ssd/i)) s += 20;
+  if (d.sizeGB >= 2000) s += 20;
+  else if (d.sizeGB >= 1000) s += 15;
+  else if (d.sizeGB >= 500) s += 10;
+  return Math.min(s, 100);
+}
+
+function scoreThermal() { return 70; } // Default without real-time data
+
+function calculateScores(data) {
+  const cats = {
+    cpu: scoreCPU(data.cpu),
+    gpu: scoreGPU(data.gpu),
+    ram: scoreRAM(data.memory),
+    storage: scoreStorage(data.storage),
+    thermal: scoreThermal()
+  };
+  const w = PROFILES[selectedProfile];
+  let overall = 0;
+  for (const k in w) overall += (cats[k] || 50) * w[k];
+  overall = Math.round(overall);
+  
+  let grade = 'F';
+  if (overall >= 93) grade = 'A+';
+  else if (overall >= 85) grade = 'A';
+  else if (overall >= 78) grade = 'B+';
+  else if (overall >= 70) grade = 'B';
+  else if (overall >= 63) grade = 'C+';
+  else if (overall >= 55) grade = 'C';
+  else if (overall >= 45) grade = 'D';
+  
+  return { overall, grade, categories: cats };
+}
+
+// ─── UI Functions ───────────────────────────────────────────
+function selectOS(el) {
+  document.querySelectorAll('.os-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedOS = el.dataset.os;
+}
+
+function selectProfile(el) {
+  document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedProfile = el.dataset.profile;
+}
+
+async function startScan() {
+  document.getElementById('screen-os').classList.add('hidden');
+  document.getElementById('screen-profile').classList.add('hidden');
+  document.getElementById('screen-scan').classList.add('hidden');
+  document.getElementById('screen-scanning').classList.remove('hidden');
+  document.getElementById('scanStatus').textContent = 'Typing commands on PC...';
+  
+  try {
+    await fetch('/api/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'os=' + selectedOS
+    });
+  } catch(e) {
+    console.error('Scan trigger failed:', e);
+  }
+  
+  document.getElementById('scanStatus').textContent = 'Waiting for diagnostic data...';
+  pollForResults();
+}
+
+async function pollForResults() {
+  const maxAttempts = 120; // 2 minutes
+  for (let i = 0; i < maxAttempts; i++) {
+    await new Promise(r => setTimeout(r, 1000));
+    try {
+      const res = await fetch('/api/results');
+      const data = await res.json();
+      if (data && data.cpu) {
+        results = data;
+        showResults(data);
+        return;
+      }
+    } catch(e) {}
+    document.getElementById('scanStatus').textContent = 
+      `Waiting for diagnostic data... (${i+1}s)`;
+  }
+  document.getElementById('scanStatus').textContent = 'Timeout — no data received';
+}
+
+function showResults(data) {
+  document.getElementById('screen-scanning').classList.add('hidden');
+  document.getElementById('screen-results').classList.remove('hidden');
+  
+  const scores = calculateScores(data);
+  
+  // Score circle
+  const circle = document.getElementById('scoreCircle');
+  circle.style.borderColor = scores.overall >= 70 ? 'var(--green)' : scores.overall >= 45 ? 'var(--gold)' : 'var(--red)';
+  document.getElementById('scoreNum').textContent = scores.overall;
+  document.getElementById('scoreGrade').textContent = scores.grade;
+  document.getElementById('resultProfile').textContent = PROFILE_NAMES[selectedProfile] + ' Score';
+  
+  // Category bars
+  const catNames = { cpu: 'CPU', gpu: 'GPU', ram: 'Memory', storage: 'Storage', thermal: 'Thermal' };
+  const catColors = { cpu: '#3b82f6', gpu: '#8b5cf6', ram: '#f59e0b', storage: '#22c55e', thermal: '#ef4444' };
+  let catHTML = '';
+  for (const [k, v] of Object.entries(scores.categories)) {
+    catHTML += `<div class="score-bar">
+      <div class="label"><span>${catNames[k]}</span><span style="color:${catColors[k]}">${v}/100</span></div>
+      <div class="track"><div class="fill" style="width:${v}%;background:${catColors[k]}"></div></div>
+    </div>`;
+  }
+  document.getElementById('categoryScores').innerHTML = catHTML;
+  
+  // Hardware details
+  let hw = '';
+  if (data.cpu) {
+    hw += hwItem('CPU', data.cpu.name || 'Unknown');
+    hw += hwItem('Cores / Threads', `${data.cpu.cores || '?'} / ${data.cpu.threads || '?'}`);
+    hw += hwItem('Clock', `${data.cpu.maxClockMHz || '?'} MHz`);
+  }
+  if (data.memory) hw += hwItem('RAM', `${data.memory.totalGB || '?'} GB`);
+  if (data.gpu && data.gpu[0]) {
+    hw += hwItem('GPU', data.gpu[0].name || 'Unknown');
+    if (data.gpu[0].vramGB) hw += hwItem('VRAM', `${data.gpu[0].vramGB} GB`);
+  }
+  if (data.motherboard) hw += hwItem('Board', `${data.motherboard.manufacturer || ''} ${data.motherboard.product || ''}`);
+  if (data.os) hw += hwItem('OS', data.os.name || 'Unknown');
+  hw += hwItem('Hostname', data.hostname || 'Unknown');
+  document.getElementById('hwDetails').innerHTML = hw;
+  
+  // Storage
+  let st = '';
+  if (data.storage) {
+    data.storage.forEach(d => {
+      const pill = d.type === 'NVMe' ? 'pill-green' : d.type === 'SSD' ? 'pill-gold' : 'pill-red';
+      st += hwItem(d.model || 'Drive', `${d.sizeGB || '?'}GB <span class="pill ${pill}">${d.type || '?'}</span>`);
+    });
+  }
+  if (data.diskSpeed) {
+    st += hwItem('Read Speed', data.diskSpeed.readMBs ? `${data.diskSpeed.readMBs} MB/s` : (data.diskSpeed.readSpeed || 'N/A'));
+    st += hwItem('Write Speed', data.diskSpeed.writeMBs ? `${data.diskSpeed.writeMBs} MB/s` : (data.diskSpeed.writeSpeed || 'N/A'));
+  }
+  document.getElementById('storageDetails').innerHTML = st || '<div class="hw-item"><span class="key">No data</span></div>';
+}
+
+function hwItem(key, val) {
+  return `<div class="hw-item"><span class="key">${key}</span><span class="val">${val}</span></div>`;
+}
+
+async function resetScan() {
+  await fetch('/api/reset', { method: 'POST' });
+  results = null;
+  document.getElementById('screen-results').classList.add('hidden');
+  document.getElementById('screen-os').classList.remove('hidden');
+  document.getElementById('screen-profile').classList.remove('hidden');
+  document.getElementById('screen-scan').classList.remove('hidden');
+}
+
+function exportPDF() {
+  // Simple print-to-PDF
+  window.print();
+}
+
+// ─── Init ───────────────────────────────────────────────────
+fetch('/api/info').then(r=>r.json()).then(d=>{
+  document.getElementById('dongleInfo').textContent=`FW ${d.firmware} · ESP32-S3 · ${Math.round(d.heap/1024)}KB free`;
+}).catch(()=>{});
+</script>
+</body>
+</html>

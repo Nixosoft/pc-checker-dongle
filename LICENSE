@@ -1,0 +1,42 @@
+Nixo Soft Corporation — Personal Use License
+
+Copyright (c) 2026 Nixo Soft Corporation. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated firmware files (the "Software"), to use the
+Software solely for personal, non-commercial purposes, subject to the
+following conditions:
+
+1. PERMITTED USE. You may download, compile, and flash the Software onto
+   ESP32-S3 based hardware (e.g., LILYGO T-Dongle-S3) for your own personal
+   use only.
+
+2. NO MODIFICATION. You may not modify, adapt, alter, translate, decompile,
+   reverse-engineer, or create derivative works based on the Software.
+
+3. NO REDISTRIBUTION. You may not distribute, sublicense, lease, rent, lend,
+   sell, resell, or otherwise transfer the Software or any copies thereof to
+   any third party, whether in source code, compiled binary, or any other form.
+
+4. NO COMMERCIAL USE. You may not use the Software, in whole or in part, for
+   any commercial purpose, including but not limited to: selling devices
+   pre-loaded with the Software, offering diagnostic services powered by the
+   Software, or incorporating the Software into any product or service offered
+   for sale.
+
+5. NO WARRANTY. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+   KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL NIXO SOFT CORPORATION BE LIABLE FOR ANY CLAIM, DAMAGES
+   OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+   OTHER DEALINGS IN THE SOFTWARE.
+
+6. TERMINATION. This license is automatically terminated if you violate any
+   of the above conditions. Upon termination, you must destroy all copies of
+   the Software in your possession.
+
+7. RESERVATION OF RIGHTS. All rights not expressly granted herein are reserved
+   by Nixo Soft Corporation.
+
+For commercial licensing inquiries, contact: president@nixosoft.com
